@@ -8,16 +8,27 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  name  String? @db.VarChar(255)
-  email String  @unique @db.VarChar(255)
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  email                String    @unique
+  photo                String?
+  password             String
+  passwordConfirm      String
+  passwordChangedAt    DateTime  @default(now())
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
 
-  roles Role[]
+  roles  Role @relation(fields: [roleId], references: [id])
+  roleId Int
+
+  @@map("users")
 }
 
 model Role {
   id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
+  name String
 
   User User[]
+
+  @@map("roles")
 }

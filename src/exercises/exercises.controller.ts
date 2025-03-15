@@ -1,24 +1,23 @@
 import {
-  Body,
-  Controller,
-  Delete,
   Get,
-  Param,
-  ParseIntPipe,
-  Patch,
+  Body,
   Post,
+  Param,
+  Patch,
+  Delete,
+  Controller,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { createExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
-import { Public } from '../shared/decorators/public.decorator';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { Role } from '../shared/enums/roles.enum';
 
-@Controller('/api/v1/exercises')
+@Controller('/api/exercises')
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
-  @Public()
+  @Roles(Role.Admin)
   @Get()
   findAll() {
     return this.exercisesService.findALl();
