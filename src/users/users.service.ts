@@ -6,6 +6,13 @@ import { DatabaseService } from '../database/database.service';
 export class UsersService {
   constructor(private prisma: DatabaseService) {}
 
+  async findAllUsers() {
+    return await this.prisma.user.findMany({
+      omit: { password: true, passwordConfirm: true },
+      include: { roles: true },
+    });
+  }
+
   async createUser(userPayload: Prisma.UserCreateInput) {
     try {
       const newUser = await this.prisma.user.create({
@@ -19,10 +26,10 @@ export class UsersService {
     }
   }
 
-  async findAllUsers() {
-    return await this.prisma.user.findMany({
-      omit: { password: true, passwordConfirm: true },
-      include: { roles: true },
+  async updateUser(userId: number, userPayload: Prisma.UserUpdateInput) {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: userPayload,
     });
   }
 }

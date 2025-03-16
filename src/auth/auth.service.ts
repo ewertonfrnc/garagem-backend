@@ -82,12 +82,10 @@ export class AuthService {
       where: { email },
     });
 
-    const passwordsMatch = await this.comparePassword(
-      password as string,
-      user!.password,
-    );
-
-    if (!user || !passwordsMatch) {
+    if (
+      !user ||
+      !(await this.comparePassword(password as string, user.password))
+    ) {
       throw new HttpException(
         { status: 'fail', error: 'Incorrect email or password' },
         HttpStatus.UNAUTHORIZED,
@@ -96,6 +94,6 @@ export class AuthService {
 
     const token = this.signToken(user.id);
 
-    return { status: 'success', token };
+    return { status: 'success', user, token };
   }
 }

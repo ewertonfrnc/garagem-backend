@@ -17,8 +17,8 @@ import { Role } from '../shared/enums/roles.enum';
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
-  @Roles(Role.Admin)
   @Get()
+  @Roles(Role.Admin)
   findAll() {
     return this.exercisesService.findALl();
   }
