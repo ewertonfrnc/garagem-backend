@@ -17,9 +17,8 @@ model User {
   passwordChangedAt    DateTime  @default(now())
   passwordResetToken   String?
   passwordResetExpires DateTime?
-
-  roles  Role @relation(fields: [roleId], references: [id])
-  roleId Int
+  roles                Role      @relation(fields: [roleId], references: [id])
+  roleId               Int
 
   @@map("users")
 }
@@ -27,8 +26,40 @@ model User {
 model Role {
   id   Int    @id @default(autoincrement())
   name String
-
   User User[]
 
   @@map("roles")
+}
+
+model ExerciseModality {
+  id        Int        @id @default(autoincrement())
+  label     String
+  code      String
+  exercises Exercise[]
+
+  @@map("exercise_modalities")
+}
+
+model BodyPart {
+  id        Int        @id @default(autoincrement())
+  label     String
+  code      String
+  exercises Exercise[]
+
+  @@map("body_parts")
+}
+
+model Exercise {
+  id        Int      @id @default(autoincrement())
+  name      String
+  image     String?
+  video     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bodyParts          BodyPart[]
+  exerciseModalityId Int
+  exerciseModality   ExerciseModality @relation(fields: [exerciseModalityId], references: [id])
+
+  @@map("exercises")
 }

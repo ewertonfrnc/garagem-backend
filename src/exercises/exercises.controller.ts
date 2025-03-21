@@ -8,10 +8,10 @@ import {
   Controller,
   ParseIntPipe,
 } from '@nestjs/common';
-import { createExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { Role } from '../shared/enums/roles.enum';
+import { Prisma } from '@prisma/client';
 
 @Controller('/api/exercises')
 export class ExercisesController {
@@ -33,7 +33,7 @@ export class ExercisesController {
 
   @Post()
   @Roles(Role.Admin)
-  create(@Body() createExerciseDto: createExerciseDto) {
+  create(@Body() createExerciseDto: Prisma.ExerciseCreateInput) {
     return this.exercisesService.create(createExerciseDto);
   }
 

@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -16,22 +17,25 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
 import { Role } from '../shared/enums/roles.enum';
 import { Roles } from '../shared/decorators/roles.decorator';
-import { Public } from '../shared/decorators/public.decorator';
+import { UsersFilterDto } from './dto/users.dto';
 
 @Controller('api/users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Public()
   @Post()
   createUser(@Body() userPayload: Prisma.UserCreateInput) {
     return this.usersService.createUser(userPayload);
   }
 
-  @Public()
   @Get()
-  getUsers() {
-    return this.usersService.findAllUsers();
+  getUsers(@Query() query: UsersFilterDto) {
+    return this.usersService.findAllUsers(query);
+  }
+
+  @Get(':id')
+  getUser(@Param('id', ParseIntPipe) userId: number) {
+    return this.usersService.findOneUser(userId);
   }
 
   @Roles(Role.User)

@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
 import { ExercisesModule } from './exercises/exercises.module';
 import { RolesModule } from './roles/roles.module';
+import { ExerciseModalitiesModule } from './exercise-modalities/exercise-modalities.module';
+import { MuscleGroupsModule } from './muscle-groups/muscle-groups.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { RolesModule } from './roles/roles.module';
     DatabaseModule,
     ExercisesModule,
     RolesModule,
+    ExerciseModalitiesModule,
+    MuscleGroupsModule,
   ],
 })
 export class AppModule {}
