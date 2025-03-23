@@ -7,7 +7,7 @@ export class MuscleGroupsController {
   constructor(private readonly muscleGroupsService: MuscleGroupsService) {}
 
   @Post()
-  create(@Body() createMuscleGroupDto: Prisma.BodyPartCreateManyInput) {
+  create(@Body() createMuscleGroupDto: Prisma.MuscleGroupCreateInput) {
     return this.muscleGroupsService.create(createMuscleGroupDto);
   }
 

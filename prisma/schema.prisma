@@ -40,13 +40,13 @@ model ExerciseModality {
   @@map("exercise_modalities")
 }
 
-model BodyPart {
+model MuscleGroup {
   id        Int        @id @default(autoincrement())
   label     String
   code      String
   exercises Exercise[]
 
-  @@map("body_parts")
+  @@map("muscle_groups")
 }
 
 model Exercise {
@@ -57,7 +57,7 @@ model Exercise {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  bodyParts          BodyPart[]
+  muscleGroups       MuscleGroup[]
   exerciseModalityId Int
   exerciseModality   ExerciseModality @relation(fields: [exerciseModalityId], references: [id])
 

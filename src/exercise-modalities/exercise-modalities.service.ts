@@ -33,7 +33,7 @@ export class ExerciseModalitiesService {
     return {
       status: 'success',
       resulsts: result.data.length,
-      data: result.data,
+      modalities: result.data,
     };
   }
 }

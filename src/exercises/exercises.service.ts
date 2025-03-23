@@ -11,7 +11,7 @@ export class ExercisesService {
     const newExerciseResult = await tryCatch(
       this.prisma.exercise.create({
         data: exercise,
-        include: { bodyParts: true, exerciseModality: true },
+        include: { muscleGroups: true, exerciseModality: true },
       }),
     );
 
@@ -19,13 +19,13 @@ export class ExercisesService {
       throw new HttpException(newExerciseResult.error, HttpStatus.BAD_REQUEST);
     }
 
-    return { status: 'success', data: newExerciseResult.data };
+    return { status: 'success', exercise: newExerciseResult.data };
   }
 
   async findALl() {
     const exercisesResult = await tryCatch(
       this.prisma.exercise.findMany({
-        include: { bodyParts: true, exerciseModality: true },
+        include: { muscleGroups: true, exerciseModality: true },
       }),
     );
 
@@ -36,7 +36,7 @@ export class ExercisesService {
     return {
       status: 'success',
       results: exercisesResult.data.length,
-      data: exercisesResult.data,
+      exercises: exercisesResult.data,
     };
   }
 }
