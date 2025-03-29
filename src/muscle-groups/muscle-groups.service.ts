@@ -7,16 +7,23 @@ import { tryCatch } from '../shared/helpers/try-catch';
 export class MuscleGroupsService {
   constructor(private prisma: DatabaseService) {}
 
-  async create(createMuscleGroupDto: Prisma.MuscleGroupCreateInput) {
+  async create(createMuscleGroupDto: Prisma.MuscleGroupCreateManyInput) {
     const result = await tryCatch(
-      this.prisma.muscleGroup.create({ data: createMuscleGroupDto }),
+      this.prisma.muscleGroup.createManyAndReturn({
+        data: createMuscleGroupDto,
+        skipDuplicates: true,
+      }),
     );
 
     if (result.error) {
       throw new HttpException({ status: 'error', error: result.error }, 400);
     }
 
-    return { status: 'success', exercise: result.data };
+    return {
+      status: 'success',
+      results: result.data.length,
+      muscleGroups: result.data,
+    };
   }
 
   async findAll() {

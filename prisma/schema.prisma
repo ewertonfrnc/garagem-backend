@@ -15,10 +15,11 @@ model User {
   password             String
   passwordConfirm      String
   passwordChangedAt    DateTime  @default(now())
-  passwordResetToken   String?
   passwordResetExpires DateTime?
-  roles                Role      @relation(fields: [roleId], references: [id])
-  roleId               Int
+  passwordResetToken   String?
+
+  roleId Int
+  roles  Role @relation(fields: [roleId], references: [id])
 
   @@map("users")
 }
@@ -32,19 +33,42 @@ model Role {
 }
 
 model ExerciseModality {
-  id        Int        @id @default(autoincrement())
-  label     String
-  code      String
+  id    Int    @id @default(autoincrement())
+  label String
+  code  String
+
   exercises Exercise[]
 
   @@map("exercise_modalities")
 }
 
-model MuscleGroup {
-  id        Int        @id @default(autoincrement())
-  label     String
-  code      String
+model CategoryFields {
+  id    Int    @id @default(autoincrement())
+  label String
+  code  String
+
+  exerciseCategory ExerciseCategory[] @relation("CategoryFieldsToExerciseCategory")
+
+  @@map("category_fields")
+}
+
+model ExerciseCategory {
+  id    Int    @id @default(autoincrement())
+  label String
+  code  String
+
   exercises Exercise[]
+  fields    CategoryFields[] @relation("CategoryFieldsToExerciseCategory")
+
+  @@map("exercise_categories")
+}
+
+model MuscleGroup {
+  id    Int    @id @default(autoincrement())
+  label String
+  code  String
+
+  exercises Exercise[] @relation("ExerciseToMuscleGroup")
 
   @@map("muscle_groups")
 }
@@ -57,9 +81,13 @@ model Exercise {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  muscleGroups       MuscleGroup[]
-  exerciseModalityId Int
-  exerciseModality   ExerciseModality @relation(fields: [exerciseModalityId], references: [id])
+  exerciseModality Int
+  modality         ExerciseModality @relation(fields: [exerciseModality], references: [id])
+
+  exerciseCategory Int
+  category         ExerciseCategory @relation(fields: [exerciseCategory], references: [id])
+
+  muscleGroups MuscleGroup[] @relation("ExerciseToMuscleGroup")
 
   @@map("exercises")
 }

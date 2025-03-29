@@ -13,6 +13,7 @@ export class ExerciseModalitiesService {
     const result = await tryCatch(
       this.prisma.exerciseModality.createManyAndReturn({
         data: createExerciseModalityDto,
+        skipDuplicates: true,
       }),
     );
 

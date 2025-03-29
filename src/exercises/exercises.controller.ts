@@ -37,6 +37,12 @@ export class ExercisesController {
     return this.exercisesService.create(createExerciseDto);
   }
 
+  @Post('batch')
+  @Roles(Role.Admin)
+  createBatch(@Body() createExerciseDto: Prisma.ExerciseCreateManyInput) {
+    return this.exercisesService.createBatch(createExerciseDto);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string) {
     return {

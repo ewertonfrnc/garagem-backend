@@ -5,13 +5,21 @@ import { tryCatch } from '../shared/helpers/try-catch';
 
 @Injectable()
 export class ExercisesService {
-  constructor(private prisma: DatabaseService) {}
+  constructor(private readonly prisma: DatabaseService) {}
 
   async create(exercise: Prisma.ExerciseCreateInput) {
     const newExerciseResult = await tryCatch(
       this.prisma.exercise.create({
         data: exercise,
-        include: { muscleGroups: true, exerciseModality: true },
+        include: {
+          muscleGroups: true,
+          category: true,
+          modality: true,
+        },
+        omit: {
+          exerciseCategory: true,
+          exerciseModality: true,
+        },
       }),
     );
 
@@ -22,10 +30,35 @@ export class ExercisesService {
     return { status: 'success', exercise: newExerciseResult.data };
   }
 
+  async createBatch(exercises: Prisma.ExerciseCreateManyInput) {
+    const { data, error } = await tryCatch(
+      this.prisma.exercise.createManyAndReturn({
+        data: exercises,
+        skipDuplicates: true,
+        include: {
+          category: true,
+          modality: true,
+        },
+      }),
+    );
+
+    if (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+
+    return {
+      status: 'success',
+      results: data.length,
+      exercises: data,
+    };
+  }
+
   async findALl() {
     const exercisesResult = await tryCatch(
       this.prisma.exercise.findMany({
-        include: { muscleGroups: true, exerciseModality: true },
+        include: {
+          muscleGroups: true,
+        },
       }),
     );
 
