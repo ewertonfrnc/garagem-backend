@@ -10,6 +10,8 @@ import { ExerciseModalitiesModule } from './exercise-modalities/exercise-modalit
 import { MuscleGroupsModule } from './muscle-groups/muscle-groups.module';
 import { ExerciseCategoriesModule } from './exercise-categories/exercise-categories.module';
 import { CategoryFieldsModule } from './category-fields/category-fields.module';
+import { WorkoutsModule } from './workouts/workouts.module';
+import { StudentWorkoutsModule } from './student-workouts/student-workouts.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { CategoryFieldsModule } from './category-fields/category-fields.module';
     MuscleGroupsModule,
     ExerciseCategoriesModule,
     CategoryFieldsModule,
+    WorkoutsModule,
+    StudentWorkoutsModule,
   ],
 })
 export class AppModule {}
