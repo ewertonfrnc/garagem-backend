@@ -1,6 +1,16 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import { StudentWorkoutsService } from './student-workouts.service';
 import { Prisma } from '@prisma/client';
+import { QueryDTO } from './dto';
 
 @Controller('api/student-workouts')
 export class StudentWorkoutsController {
@@ -14,17 +24,17 @@ export class StudentWorkoutsController {
   }
 
   @Get()
-  findAll() {
-    return this.studentWorkoutsService.findAll();
+  findAll(@Query() queryDto: QueryDTO) {
+    return this.studentWorkoutsService.findAll(queryDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentWorkoutsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.studentWorkoutsService.findOne(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.studentWorkoutsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.studentWorkoutsService.remove(id);
   }
 }

@@ -17,7 +17,14 @@ export class UsersService {
           name: { contains: name, mode: 'insensitive' },
           email: { contains: email, mode: 'insensitive' },
         },
-        omit: { password: true, passwordConfirm: true },
+        omit: {
+          roleId: true,
+          password: true,
+          passwordConfirm: true,
+          passwordChangedAt: true,
+          passwordResetExpires: true,
+          passwordResetToken: true,
+        },
         include: { roles: true },
       });
 
@@ -31,7 +38,14 @@ export class UsersService {
     try {
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        omit: { password: true, passwordConfirm: true },
+        omit: {
+          roleId: true,
+          password: true,
+          passwordConfirm: true,
+          passwordChangedAt: true,
+          passwordResetExpires: true,
+          passwordResetToken: true,
+        },
         include: { roles: true },
       });
 

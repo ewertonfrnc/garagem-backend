@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '../database/database.service';
 import { tryCatch } from '../shared/helpers/try-catch';
+import { QueryDTO } from './dto';
 
 @Injectable()
 export class StudentWorkoutsService {
@@ -25,13 +26,18 @@ export class StudentWorkoutsService {
     return { status: 'success', studentWorkout: data };
   }
 
-  async findAll() {
+  async findAll(queryDto: QueryDTO) {
+    const { userId } = queryDto;
+    console.log('userId', userId);
+
     const { data, error } = await tryCatch(
       this.prisma.studentWorkout.findMany({
+        where: { userId: Number(userId) },
         include: {
           user: { select: { id: true, name: true, email: true } },
           workout: true,
         },
+        omit: { userId: true, workoutId: true },
       }),
     );
 
@@ -42,8 +48,24 @@ export class StudentWorkoutsService {
     return { status: 'success', results: data.length, studentWorkouts: data };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} studentWorkout`;
+  async findOne(id: number) {
+    console.log('id', id);
+    const { data, error } = await tryCatch(
+      this.prisma.studentWorkout.findMany({
+        where: { userId: id },
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+          workout: true,
+        },
+        omit: { userId: true, workoutId: true },
+      }),
+    );
+
+    if (error) {
+      throw new HttpException({ status: 'error', error: error }, 400);
+    }
+
+    return { status: 'success', studentWorkout: data };
   }
 
   remove(id: number) {
