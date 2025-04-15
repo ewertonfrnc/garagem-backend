@@ -28,15 +28,11 @@ export class StudentWorkoutsService {
 
   async findAll(queryDto: QueryDTO) {
     const { userId } = queryDto;
-    console.log('userId', userId);
 
     const { data, error } = await tryCatch(
       this.prisma.studentWorkout.findMany({
         where: { userId: Number(userId) },
-        include: {
-          user: { select: { id: true, name: true, email: true } },
-          workout: true,
-        },
+        include: { workout: { include: { exercises: true } } },
         omit: { userId: true, workoutId: true },
       }),
     );
@@ -49,7 +45,6 @@ export class StudentWorkoutsService {
   }
 
   async findOne(id: number) {
-    console.log('id', id);
     const { data, error } = await tryCatch(
       this.prisma.studentWorkout.findMany({
         where: { userId: id },
