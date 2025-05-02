@@ -58,6 +58,12 @@ export class ExercisesService {
       this.prisma.exercise.findMany({
         include: {
           muscleGroups: true,
+          category: true,
+          modality: true,
+        },
+        omit: {
+          exerciseCategory: true,
+          exerciseModality: true,
         },
       }),
     );
