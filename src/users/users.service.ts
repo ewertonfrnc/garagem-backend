@@ -8,12 +8,12 @@ export class UsersService {
   constructor(private prisma: DatabaseService) {}
 
   async findAllUsers(query: UsersFilterDto) {
-    const { roleId, name, email } = query;
+    const { name, email } = query;
 
     try {
       const users = await this.prisma.user.findMany({
         where: {
-          roleId: roleId ? { equals: Number(roleId) } : undefined,
+          roleId: { not: { equals: 1 } },
           name: { contains: name, mode: 'insensitive' },
           email: { contains: email, mode: 'insensitive' },
         },

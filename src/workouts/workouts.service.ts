@@ -11,7 +11,6 @@ export class WorkoutsService {
     const { data, error } = await tryCatch(
       this.prisma.workout.create({
         data: createWorkoutDto,
-        include: { exercises: true },
       }),
     );
 
@@ -25,7 +24,12 @@ export class WorkoutsService {
   async findAll() {
     const { data, error } = await tryCatch(
       this.prisma.workout.findMany({
-        include: { exercises: true },
+        include: {
+          workoutExercises: {
+            orderBy: { order: 'asc' },
+            include: { exercise: true, sets: true },
+          },
+        },
       }),
     );
 
@@ -33,7 +37,7 @@ export class WorkoutsService {
       throw new HttpException({ status: 'error', error: error }, 400);
     }
 
-    return { status: 'success', workouts: data };
+    return { status: 'success', results: data.length, workouts: data };
   }
 
   findOne(id: number) {

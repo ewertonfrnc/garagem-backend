@@ -38,8 +38,8 @@ model Role {
 
 model ExerciseModality {
   id    Int    @id @default(autoincrement())
-  label String
-  code  String
+  label String @unique
+  code  String @unique
 
   // Relations
   exercises Exercise[]
@@ -49,34 +49,34 @@ model ExerciseModality {
 
 model CategoryFields {
   id    Int    @id @default(autoincrement())
-  label String
-  code  String
+  label String @unique
+  code  String @unique
 
   // Relations
-  exerciseCategory ExerciseCategory[] @relation("CategoryFieldsToExerciseCategory")
+  exerciseCategory ExerciseCategory[]
 
   @@map("category_fields")
 }
 
 model ExerciseCategory {
   id    Int    @id @default(autoincrement())
-  label String
-  code  String
+  label String @unique
+  code  String @unique
 
   // Relations
   exercises Exercise[]
-  fields    CategoryFields[] @relation("CategoryFieldsToExerciseCategory")
+  fields    CategoryFields[]
 
   @@map("exercise_categories")
 }
 
 model MuscleGroup {
   id    Int    @id @default(autoincrement())
-  label String
-  code  String
+  label String @unique
+  code  String @unique
 
   // Relations
-  exercises Exercise[] @relation("ExerciseToMuscleGroup")
+  exercises Exercise[]
 
   @@map("muscle_groups")
 }
@@ -90,13 +90,14 @@ model Exercise {
   updatedAt DateTime @updatedAt
 
   // Relations
-  muscleGroups MuscleGroup[]    @relation("ExerciseToMuscleGroup")
+  muscleGroups MuscleGroup[]
   modality     ExerciseModality @relation(fields: [exerciseModality], references: [id])
   category     ExerciseCategory @relation(fields: [exerciseCategory], references: [id])
 
   exerciseModality Int
   exerciseCategory Int
-  workouts         Workout[]
+
+  workoutExercises WorkoutExercise[]
 
   @@map("exercises")
 }
@@ -109,10 +110,46 @@ model Workout {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  exercises       Exercise[]
-  studentWorkouts StudentWorkout[]
+  workoutExercises WorkoutExercise[]
+  studentWorkouts  StudentWorkout[]
 
   @@map("workouts")
+}
+
+model Set {
+  id       Int     @id @default(autoincrement())
+  reps     Int? // Torna opcional, pode ser nulo se for um set por tempo/distância
+  rest     Int // Descanso em segundos
+  weight   Float? // Peso utilizado (em kg). 
+  duration Int? // Duração em segundos
+  distance Float? // Distância (ex: em metros). 
+  notes    String? // Campo adicional para notas específicas da série, se necessário
+
+  // Relations
+  workoutExerciseId Int
+  workoutExercise   WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
+
+  @@map("sets")
+}
+
+model WorkoutExercise {
+  id    Int     @id @default(autoincrement())
+  order Int? // Opcional: para definir a ordem dos exercícios no treino
+  notes String?
+
+  // Relations
+  workoutId  Int
+  workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exerciseId Int
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  sets Set[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workoutId, exerciseId, order])
+  @@map("workout_exercises")
 }
 
 // Model to associate workouts with students on specific dates

@@ -32,7 +32,13 @@ export class StudentWorkoutsService {
     const { data, error } = await tryCatch(
       this.prisma.studentWorkout.findMany({
         where: { userId: Number(userId) },
-        include: { workout: { include: { exercises: true } } },
+        include: {
+          workout: {
+            include: {
+              // exercises: true,
+            },
+          },
+        },
         omit: { userId: true, workoutId: true },
       }),
     );
